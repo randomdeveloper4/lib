@@ -14,9 +14,9 @@ import com.app.library.model.BookInputModel;
  */
 public interface BookService {
 
-	List<Book> getBooksByAuthor(final String author);
+	List<Book> getBooksByAuthorId(final String authorId);
 
-	Book getBook(final String bookId);
+	Book getBookById(final String bookId);
 
 	Book addBook(final BookInputModel book);
 
@@ -24,6 +24,6 @@ public interface BookService {
 
 	Book updateBookAuthorList(final BookInputModel input);
 
-	void deleteBook(final String bookId);
+	void deleteBookById(final String bookId);
 
 }

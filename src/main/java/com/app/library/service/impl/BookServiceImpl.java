@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.app.library.dao.BookDAO;
 import com.app.library.entity.Book;
+import com.app.library.exception.LibraryException;
 import com.app.library.model.BookInputModel;
 import com.app.library.service.BookService;
 
@@ -25,20 +26,22 @@ public class BookServiceImpl implements BookService {
 	BookDAO bookDAO;
 
 	@Override
-	public List<Book> getBooksByAuthor(String authorId) {
-		List<Book> books = bookDAO.findBooksByAuthorId(authorId);
-		return books;
+	public List<Book> getBooksByAuthorId(final String authorId) {
+		return bookDAO.findBooksByAuthorId(authorId);
 	}
 
 	@Override
-	public Book getBook(String bookId) {
+	public Book getBookById(final String bookId) {
 		Optional<Book> book = bookDAO.findById(bookId);
+		if (book.isEmpty()) {
+			LibraryException.validationFailure("No book record present for bookId: " + bookId);
+		}
 		return book.get();
 	}
 
 	@Override
-	public Book addBook(BookInputModel bookInputModel) {
-		Book book = new Book();
+	public Book addBook(final BookInputModel bookInputModel) {
+		final Book book = new Book();
 		book.setAuthors(bookInputModel.getAuthors());
 		book.setBookId(bookInputModel.getBookId());
 		book.setBookName(bookInputModel.getBookName());
@@ -46,21 +49,27 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
-	public Book updateBookName(BookInputModel input) {
+	public Book updateBookName(final BookInputModel input) {
 		final Optional<Book> book = bookDAO.findById(input.getBookId());
+		if (book.isEmpty()) {
+			LibraryException.validationFailure("No book record present for bookId: " + input.getBookId());
+		}
 		book.get().setBookName(input.getBookName());
 		return bookDAO.save(book.get());
 	}
 
 	@Override
-	public Book updateBookAuthorList(BookInputModel input) {
+	public Book updateBookAuthorList(final BookInputModel input) {
 		final Optional<Book> book = bookDAO.findById(input.getBookId());
+		if (book.isEmpty()) {
+			LibraryException.validationFailure("No book record present for bookId: " + input.getBookId());
+		}
 		book.get().setAuthors(input.getAuthors());
 		return bookDAO.save(book.get());
 	}
 
 	@Override
-	public void deleteBook(String bookId) {
+	public void deleteBookById(final String bookId) {
 		bookDAO.deleteById(bookId);
 	}
 

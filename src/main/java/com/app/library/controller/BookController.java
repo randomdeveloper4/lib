@@ -6,6 +6,8 @@ package com.app.library.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,40 +25,46 @@ import com.app.library.service.BookService;
  * @author Sunil.Chauhan
  */
 @RestController
-@RequestMapping("/book/")
+@RequestMapping("/api/")
 public class BookController {
-	
+
 	@Autowired
 	BookService bookService;
-	
-	@GetMapping("get/books/{authorId}")
-	public List<Book> getBooksByAuthor(@PathVariable final String authorId) {
-		return bookService.getBooksByAuthor(authorId);
+
+	@GetMapping("/getBooksByAuthorId/{authorId}")
+	@PreAuthorize("hasRole('USER')")
+	public List<Book> getBooksByAuthorId(@PathVariable final String authorId) {
+		return bookService.getBooksByAuthorId(authorId);
 	}
-	
-	@GetMapping("get/book/{bookId}")
-	public Book getBook(@PathVariable final String bookId) {
-		return bookService.getBook(bookId);
+
+	@GetMapping("/getBookById/{bookId}")
+	@PreAuthorize("hasRole('USER')")
+	public Book getBookById(@PathVariable final String bookId) {
+		return bookService.getBookById(bookId);
 	}
-	
-	@PostMapping("add/book")
+
+	@PostMapping("/addBook")
+	@PreAuthorize("hasRole('USER')")
 	public Book addBook(@RequestBody final BookInputModel book) {
 		return bookService.addBook(book);
 	}
-	
-	@PutMapping("update/bookName")
+
+	@PutMapping("/updateBookName")
+	@Secured("USER")
 	public Book updateBookName(@RequestBody final BookInputModel input) {
 		return bookService.updateBookName(input);
 	}
-	
-	@PutMapping("update/bookAuthorList")
+
+	@PutMapping("/updateBookAuthorList")
+	@Secured("ADMIN")
 	public Book updateBookAuthorList(@RequestBody final BookInputModel input) {
 		return bookService.updateBookAuthorList(input);
 	}
-	
-	@DeleteMapping("delete/book")
-	public void delete(@RequestBody final String bookId) {
-		bookService.deleteBook(bookId);
+
+	@DeleteMapping("/deleteBookById")
+	@PreAuthorize("hasRole('ADMIN')")
+	public void deleteBookById(@RequestBody final String bookId) {
+		bookService.deleteBookById(bookId);
 	}
 
 }

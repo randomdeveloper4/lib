@@ -15,8 +15,8 @@ import lombok.Data;
  *
  */
 @Entity
-@Table(name="user")
 @Data
+@Table(name="user")
 public class User {
 	
 	@Id
