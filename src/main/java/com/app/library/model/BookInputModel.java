@@ -14,11 +14,11 @@ import lombok.Data;
  *
  */
 @Data
-public class BookUpdateInputModel {
+public class BookInputModel {
 	
 	private String bookId;
 
-	private String updatedBookName;
+	private String bookName;
 	
-	private Set<Author> updatedAuthors;
+	private Set<Author> authors;
 }
